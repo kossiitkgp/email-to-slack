@@ -48,6 +48,12 @@
 			"revision": "7fcbc72f853b92b5720db4a6b8482be612daef24"
 		},
 		{
+			"checksumSHA1": "Y3fuxzM5VA+fTUymIRdfV2j4WmA=",
+			"path": "github.com/nlopes/slack",
+			"revision": "c0ac548498d6c211ad9cb09ecb58c576d8ba602e",
+			"revisionTime": "2017-12-16T22:35:41Z"
+		},
+		{
 			"checksumSHA1": "hKZGpbFuCrkE4s1vxubKK1aFlfI=",
 			"path": "golang.org/x/net/context",
 			"revision": "d9558e5c97f85372afee28cf2b6059d7d3818919"

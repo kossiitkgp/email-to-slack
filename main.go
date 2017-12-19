@@ -4,9 +4,11 @@ import (
 	"log"
 	"os"
     "strings"
+    "net/http"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
+    "github.com/nlopes/slack"
 )
 
 type MessageIMEventJSON struct {
@@ -53,12 +55,22 @@ func main() {
             log.Println("Text ", payloadjson.Event.Text)
             log.Println("TS ", payloadjson.Event.TS)
 
+            // Prepare the message to be sent
             slackbot_message := strings.Split(payloadjson.Event.Text, "|")[0]
             link := strings.Split(slackbot_message, " ")
             message_to_send := `Received an email ! Somebody reply soon. Content : ` + link[len(link) - 1][1:]
             log.Println(message_to_send)
 
-            c.JSON(200, gin.H{"a": "a"})
+            // Send the message
+            api := slack.New(os.Getenv("SLACK_BOT_TOKEN"))
+            params := slack.NewPostMessageParameters()
+            params.Text = message_to_send
+            params.Username = "bhattu"
+            params.AsUser = true
+
+            api.PostMessage(os.Getenv("CHANNEL_ID"), message_to_send, params)
+
+            c.JSON(200, gin.H{"success": true})
 
         } else {
             log.Println("Could not fucking decode payloadjson")
