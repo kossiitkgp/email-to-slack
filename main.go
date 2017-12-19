@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+    "strings"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
@@ -51,6 +52,11 @@ func main() {
             log.Println("User ", payloadjson.Event.User)
             log.Println("Text ", payloadjson.Event.Text)
             log.Println("TS ", payloadjson.Event.TS)
+
+            slackbot_message := strings.Split(payloadjson.Event.Text, "|")[0]
+            link := strings.Split(slackbot_message, " ")
+            message_to_send := `Received an email ! Somebody reply soon. Content : ` + link[len(link) - 1][1:]
+            log.Println(message_to_send)
 
             c.JSON(200, gin.H{"a": "a"})
 
