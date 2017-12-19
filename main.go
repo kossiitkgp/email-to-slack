@@ -66,6 +66,7 @@ func main() {
             params.Text = message_to_send
             params.Username = "bhattu"
             params.AsUser = true
+            params.Parse = "full"
 
             api.PostMessage(os.Getenv("CHANNEL_ID"), message_to_send, params)
 
