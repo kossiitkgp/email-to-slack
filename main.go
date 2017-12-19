@@ -8,16 +8,20 @@ import (
 	_ "github.com/heroku/x/hmetrics/onload"
 )
 
-type E struct {
-    Events string
-}
-
 type MessageIMEventJSON struct {
     EventType string `json:"type"`
     Channel string `json:"channel"`
     User string `json:"user"`
     Text string `json:"text"`
     TS string `json:"ts"`
+}
+
+type SlackPayloadJSON struct {
+    Token string `json:"token"`
+    TeamID string `json:"team_id"`
+    APIAppID string `json:"api_app_id"`
+    EventID string `json:"event_id"`
+    Event MessageIMEventJSON `json:"event"`
 }
 
 func main() {
@@ -32,22 +36,27 @@ func main() {
 
     router.POST("/", func(c *gin.Context) {
 
-        var json MessageIMEventJSON
+        var payloadjson SlackPayloadJSON
 
-        data := &E{}
+        if c.Bind(&payloadjson) == nil {
 
+            log.Println("Token", payloadjson.Token)
+            log.Println("TeamID", payloadjson.TeamID)
+            log.Println("APIAppID", payloadjson.APIAppID)
+            log.Println("EventID", payloadjson.EventID)
+            log.Println("Event", payloadjson.Event)
 
-        if c.Bind(&json) == nil {
-            log.Println("EventType ", json.EventType)
-            log.Println("Channel ", json.Channel)
-            log.Println("User ", json.User)
-            log.Println("Text ", json.Text)
-            log.Println("TS ", json.TS)
+            log.Println("EventType ", payloadjson.Event.EventType)
+            log.Println("Channel ", payloadjson.Event.Channel)
+            log.Println("User ", payloadjson.Event.User)
+            log.Println("Text ", payloadjson.Event.Text)
+            log.Println("TS ", payloadjson.Event.TS)
+
             c.JSON(200, gin.H{"a": "a"})
-        } else if c.Bind(data) == nil {
-            log.Println(data)
+
         } else {
-            log.Println("Could not fucking decode")
+            log.Println("Could not fucking decode payloadjson")
+            c.String(404, "Get the Fuck Off")
         }
 
     })
