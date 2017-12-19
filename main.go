@@ -18,12 +18,16 @@ func main() {
 	router := gin.New()
 	router.Use(gin.Logger())
 
-	router.GET("/", func(c *gin.Context) {
-		c.String(200, "Hello")
-	})
-
     router.POST("/", func(c *gin.Context) {
-        c.JSON(200, gin.H{"challenge": c.PostForm("challenge")})
+
+        var json struct {
+            Value string `json:"challenge" binding:"required"`
+        }
+
+        if c.Bind(&json) == nil {
+            c.JSON(200, gin.H{"challenge": json.Value})
+        }
+
     })
 
 	router.Run(":" + port)
