@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
     "strings"
-    "net/http"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"

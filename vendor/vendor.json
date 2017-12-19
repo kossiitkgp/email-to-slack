@@ -59,6 +59,12 @@
 			"revision": "d9558e5c97f85372afee28cf2b6059d7d3818919"
 		},
 		{
+			"checksumSHA1": "7EZyXN0EmZLgGxZxK01IJua4c8o=",
+			"path": "golang.org/x/net/websocket",
+			"revision": "d866cfc389cec985d6fda2859936a575a55a3ab6",
+			"revisionTime": "2017-12-11T20:45:21Z"
+		},
+		{
 			"checksumSHA1": "P7dBpV3QA/3GJWGNwb9Hn3BzCQs=",
 			"comment": "v5.9.1",
 			"path": "gopkg.in/bluesuncorp/validator.v5",
