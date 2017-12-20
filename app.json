@@ -32,7 +32,7 @@
       "value": "USLACKBOT"
     },
     "SLACK_WORKSPACE_TOKEN_FOR_APP": {
-      "description": "Find it in our Slack App's 'OAuth and Permissions' tab"
+      "description": "Find it in your Slack App's 'OAuth and Permissions' tab"
     }
   },
   "buildpacks": [
