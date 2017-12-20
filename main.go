@@ -77,12 +77,13 @@ func main() {
 			re := regexp.MustCompile(`/F\w*/`)
 			file_id := re.FindString(payloadjson.Event.Text)
 			file_id = file_id[1 : len(file_id)-1]
+			log.Println("Got the file id", file_id)
 
 			// Prepare to get file content
 			files_info_url := "https://slack.com/api/files.info"
 			v := url.Values{}
 			v.Set("file", file_id)
-			v.Set("token", os.Getenv("SLACK_BOT_TOKEN"))
+			v.Set("token", os.Getenv("SLACK_WORKSPACE_TOKEN_FOR_APP"))
 			s := v.Encode()
 			req, err := http.NewRequest("POST", files_info_url, strings.NewReader(s))
 			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -97,6 +98,8 @@ func main() {
 			defer resp.Body.Close()
 
 			body, err := ioutil.ReadAll(resp.Body)
+
+			log.Println("BODY IS THIS : ", string(body))
 
 			var data map[string]interface{}
 			if err := json.Unmarshal(body, &data); err != nil {
