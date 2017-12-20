@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -54,6 +55,11 @@ func validate(payloadjson *SlackPayloadJSON) bool {
 	return strings.Contains(payloadjson.Event.Text, "<@USLACKBOT> uploaded a file:")
 }
 
+func create_empty_file(fname string) {
+	d1 := []byte("")
+	ioutil.WriteFile(fname, d1, 0644)
+}
+
 func main() {
 	port := os.Getenv("PORT")
 
@@ -78,6 +84,20 @@ func main() {
 			file_id := re.FindString(payloadjson.Event.Text)
 			file_id = file_id[1 : len(file_id)-1]
 			log.Println("Got the file id", file_id)
+
+			// Slack API sucks. They send two payloads for message.im event and we
+			// only have to respond to one. So, once we send the email to channel, we
+			// create an empty file with that name, and thus do not respond to a payload
+			// if a file with name of the particular file id exists.
+			curr_files, _ := filepath.Glob("*")
+			filename := file_id + ".email_dmp"
+			for _, f := range curr_files {
+				if f == filename {
+					log.Println("Email already sent to the channel.")
+					return
+				}
+			}
+			defer create_empty_file(filename)
 
 			// Prepare to get file content
 			files_info_url := "https://slack.com/api/files.info"
@@ -107,7 +127,7 @@ func main() {
 			}
 			file := data["file"].(map[string]interface{})
 
-			message_to_send := "New email -\n Subject: `%s` \n\n ```%s```"
+			message_to_send := "New email\n Subject: `%s` \n\n ```%s```"
 			message_to_send = fmt.Sprintf(message_to_send, file["subject"], file["plain_text"])
 			log.Println(message_to_send)
 
