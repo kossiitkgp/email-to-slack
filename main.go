@@ -76,6 +76,7 @@ func main() {
 			// starting with F.
 			re := regexp.MustCompile(`/F\w*/`)
 			file_id := re.FindString(payloadjson.Event.Text)
+			file_id = file_id[1 : len(file_id)-1]
 
 			// Prepare to get file content
 			files_info_url := "https://slack.com/api/files.info"
