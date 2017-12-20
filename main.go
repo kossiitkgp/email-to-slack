@@ -1,8 +1,14 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +32,7 @@ type SlackPayloadJSON struct {
 	Event    MessageIMEventJSON `json:"event"`
 }
 
-func authenticate(payloadjson *SlackPayloadJSON) bool {
+func validate(payloadjson *SlackPayloadJSON) bool {
 	credentials := [4]string{
 		os.Getenv("SLACK_PAYLOAD_TOKEN"),
 		os.Getenv("TEAM_ID"),
@@ -41,7 +47,11 @@ func authenticate(payloadjson *SlackPayloadJSON) bool {
 		payloadjson.Event.Channel,
 	}
 
-	return credentials == received_credentials
+	if credentials != received_credentials {
+		return false
+	}
+
+	return strings.Contains(payloadjson.Event.Text, "<@USLACKBOT> uploaded a file:")
 }
 
 func main() {
@@ -59,25 +69,42 @@ func main() {
 		var payloadjson SlackPayloadJSON
 
 		bind_err := c.Bind(&payloadjson)
-		valid_req := authenticate(&payloadjson)
+		valid_req := validate(&payloadjson)
 
 		if bind_err == nil && valid_req {
-			log.Println("Token", payloadjson.Token)
-			log.Println("TeamID", payloadjson.TeamID)
-			log.Println("APIAppID", payloadjson.APIAppID)
-			log.Println("EventID", payloadjson.EventID)
-			log.Println("Event", payloadjson.Event)
+			// We need the file id in the message which is present inside the URL of the file
+			// starting with F.
+			re := regexp.MustCompile(`/F\w*/`)
+			file_id := re.FindString(payloadjson.Event.Text)
 
-			log.Println("EventType ", payloadjson.Event.EventType)
-			log.Println("Channel ", payloadjson.Event.Channel)
-			log.Println("User ", payloadjson.Event.User)
-			log.Println("Text ", payloadjson.Event.Text)
-			log.Println("TS ", payloadjson.Event.TS)
+			// Prepare to get file content
+			files_info_url := "https://slack.com/api/files.info"
+			v := url.Values{}
+			v.Set("file", file_id)
+			v.Set("token", os.Getenv("SLACK_BOT_TOKEN"))
+			s := v.Encode()
+			req, err := http.NewRequest("POST", files_info_url, strings.NewReader(s))
+			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-			// Prepare the message to be sent
-			slackbot_message := strings.Split(payloadjson.Event.Text, "|")[0]
-			link := strings.Split(slackbot_message, " ")
-			message_to_send := `Received a new email. Content : ` + link[len(link)-1][1:]
+			client := &http.Client{}
+			resp, err := client.Do(req)
+			if err != nil {
+				fmt.Printf("http.Do() error: %v\n", err)
+				return
+			}
+
+			defer resp.Body.Close()
+
+			body, err := ioutil.ReadAll(resp.Body)
+
+			var data map[string]interface{}
+			if err := json.Unmarshal(body, &data); err != nil {
+				panic(err)
+			}
+			file := data["file"].(map[string]interface{})
+
+			message_to_send := "New email -\n Subject: `%s` \n\n ```%s```"
+			message_to_send = fmt.Sprintf(message_to_send, file["subject"], file["plain_text"])
 			log.Println(message_to_send)
 
 			// Send the message
