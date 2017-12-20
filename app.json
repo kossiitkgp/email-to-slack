@@ -1,12 +1,43 @@
 {
-  "name": "Start on Heroku: Go",
-  "description": "Go Getting Started Example App",
+  "name": "Email to Slack",
+  "description": "Get your Emails delivered on a slack channel",
   "keywords": [
-    "getting-started",
     "go",
-    "sample",
-    "example"
+    "slack",
+    "email"
   ],
-  "website": "http://github.com/heroku/go-getting-started",
-  "repository": "http://github.com/heroku/go-getting-started"
+  "website": "https://github.com/kossiitkgp/email-to-slack",
+  "repository": "https://github.com/kossiitkgp/email-to-slack",
+  "env": {
+    "APP_ID": {
+      "description": "You get this when you create the app"
+    },
+    "SLACK_PAYLOAD_TOKEN": {
+      "description": "You get this when you create the app"
+    },
+    "TEAM_ID": {
+      "description": "ID of your slack workspace"
+    },
+    "CHANNEL_ID": {
+      "description": "The ID of the channel you want to send your emails to"
+    },
+    "MY_DM_CHANNEL": {
+      "description": "The ID of the direct messaging channel between you and @slackbot"
+    },
+    "SLACK_BOT_TOKEN": {
+      "description": "Token of a slack bot which has the permission to post to $CHANNEL_ID"
+    },
+    "SLACKBOT_USER_ID": {
+      "description": "Set it to `USLACKBOT`",
+      "value": "USLACKBOT"
+    },
+    "SLACK_WORKSPACE_TOKEN_FOR_APP": {
+      "description": "Find it in our Slack App's 'OAuth and Permissions' tab"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/go"
+    }
+  ]
 }

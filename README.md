@@ -1,39 +1,54 @@
 
-# go-getting-started
+# Reading emails on slack
 
-A barebones Go app, which can easily be deployed to Heroku.
+If your team works on a Slack workspace while you have to maintain a bunch of different email ids and wish to
+be notified of every email instantly on slack, there is a hack for you.
 
-This application supports the [Getting Started with Go on Heroku](https://devcenter.heroku.com/articles/getting-started-with-go) article - check it out.
+## How does it work ?
 
-## Running Locally
+1. Set up a [forwarding email](https://get.slack.help/hc/en-us/articles/206819278-Send-emails-to-Slack#set-up-a-forwarding-email-address). If you send any email to this address, it will appear as a file in your Direct Messaging channel with slackbot.
+2. Add this address as a forwarding address of your email account. (For gmail find forwarding options from gmail settings)
+3. Use Slack API (which sucks) to get notified about this.
+4. Use Slack API (still sucks) to post the email on a channel you want to.
 
-Make sure you have [Go](http://golang.org/doc/install) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.
+## Detailed instructions
 
-```sh
-$ go get -u github.com/heroku/go-getting-started
-$ cd $GOPATH/src/github.com/heroku/go-getting-started
-$ heroku local
-```
+Step 1 and 2 are very easy and you can help yourself by searching the web enough.
 
-Your app should now be running on [localhost:5000](http://localhost:5000/).
+Step 3 -
 
-You should also install [govendor](https://github.com/kardianos/govendor) if you are going to add any dependencies to the sample app.
+* Go to https://api.slack.com/apps and create a new Slack app.
+* After creating the app, navigate to the app dashboard and find "Event Subscriptions" in the sidebar.
+* Subscribe to the event `message.im` which is the only event we need to be notified about.
+* Go to "OAuth and Permissions" and add `files:read` and `im:history` scopes. Note the OAuth access token here to be used for `SLACK_WORKSPACE_TOKEN_FOR_APP` environment variable.
+* Add the URL of your server (A heroku app which can be deployed from this repository)
+  * Take care with the `Content-type` you while interacting with Slack API. `application/x-www-form-urlencoded` works most of the time.
+* The payload is then recieved and parsed in [main.go](https://github.com/kossiitkgp/email-to-slack/blob/master/main.go)
+  * Slackbot uploads the email as a file. The file id is extracted from the message.
+  * The email subject and body is extracted upon reading the file info.
+* A message is then posted on the channel specified.
 
-## Deploying to Heroku
+# Description of environment variables used by the repository
 
-```sh
-$ heroku create
-$ git push heroku master
-$ heroku open
-```
-
-or
+| Config Variable                 | Description                                                          |
+|---------------------------------|----------------------------------------------------------------------|
+| `APP_ID`                        | You get this when you create the app                                 |
+| `SLACK_PAYLOAD_TOKEN`           | You get this when you create the app                                 |
+| `TEAM_ID`                       | ID of your slack workspace                                           |
+| `CHANNEL_ID`                    | The ID of the channel you want to send your emails to                |
+| `MY_DM_CHANNEL`                 | The ID of the direct messaging channel between you and @slackbot     |
+| `SLACK_BOT_TOKEN`               | Token of a slack bot which has the permission to post to $CHANNEL_ID |
+| `SLACKBOT_USER_ID`              | Set it to `USLACKBOT`                                                |
+| `SLACK_WORKSPACE_TOKEN_FOR_APP` | Find it in our Slack App's "OAuth and Permissions" tab               |
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
+## Current status of the project
 
-## Documentation
+[@OrkoHunter](https://github.com/OrkoHunter) maintains this repository and handles the configurations for KOSS slack channel.
 
-For more information about using Go on Heroku, see these Dev Center articles:
+He also gets annoyed with the constant `Unread Mentions` message due to slackbot's messages for emails. But he uses
+[Tampermonkey](https://tampermonkey.net/) and runs this [custom script](https://gist.github.com/OrkoHunter/09edb7ada76078f36f54f95ce0457a87)
+to get rid of those.
 
-- [Go on Heroku](https://devcenter.heroku.com/categories/go)
+And yes, Slack API sucks.
