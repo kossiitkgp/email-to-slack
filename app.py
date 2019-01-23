@@ -12,19 +12,25 @@ def create_app():
         if request.method == "GET":
             return "Hello World"
         elif request.method == "POST":
-            params = request.get_json(force=True)
-            print(params)
-            data = {
-                'challenge': params.get('challenge'),
-            }
-            resp = Response(
-                response=json.dumps(data),
-                status=200,
-                mimetype='application/json'
-            )
-            resp.headers['Content-type'] = 'application/json'
+            print("parameters")
+            print(json.dumps(request.get_json(force=True)))
 
-            return resp
+            print("headers")
+            print(request.headers)
+
+            # params = request.get_json(force=True)
+            # print(params)
+            # data = {
+            #     'challenge': params.get('challenge'),
+            # }
+            # resp = Response(
+            #     response=json.dumps(data),
+            #     status=200,
+            #     mimetype='application/json'
+            # )
+            # resp.headers['Content-type'] = 'application/json'
+
+            # return resp
 
     app.secret_key = os.environ.setdefault("APP_SECRET_KEY", "notsosecret")
     app.config['SESSION_TYPE'] = 'filesystem'
