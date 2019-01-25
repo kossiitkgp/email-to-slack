@@ -8,12 +8,15 @@ from flask import Flask, render_template, redirect, request, Response
 app = Flask(__name__)
 
 
-def check_security(params):
+def validate(params):
+    if params["event"]["type"] != "message":
+        print("Event type is ", params["event"]["type"], "but not `message`")
+
     app_id = params["api_app_id"] == os.environ["APP_ID"]
     token = params["token"] == os.environ["VERIFICATION_TOKEN"]
     team = params["team_id"] == os.environ["TEAM_ID"]
     channel = params["event"]["channel"] == os.environ["USLACKBOT_CHANNEL"]
-    user = params["event"]["user"] == "USLACKBOT"
+    user = params["event"].get("user", "") == "USLACKBOT"
     subtype = params["event"]["subtype"] = "file_share"
 
     if app_id and token and team and channel and user and subtype:
@@ -33,7 +36,7 @@ def main():
         # print(request.headers)
         params = request.get_json(force=True)
 
-        if check_security(params):
+        if validate(params):
             email = params["event"]["files"][0]
 
             if f"CHECKED_{email['id']}" in os.environ or "X-Slack-Retry-Num" in request.headers:
@@ -74,7 +77,7 @@ def main():
             all_cc = ', '.join([i["original"] for i in email["cc"]])
 
             data["attachments"][0]["fields"].append({
-                "title": "to",
+                "title": "Sent To",
                 "value": all_to
             })
 
