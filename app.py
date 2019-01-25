@@ -18,19 +18,19 @@ def create_app():
             print("headers")
             print(request.headers)
 
-            # params = request.get_json(force=True)
-            # print(params)
-            # data = {
-            #     'challenge': params.get('challenge'),
-            # }
-            # resp = Response(
-            #     response=json.dumps(data),
-            #     status=200,
-            #     mimetype='application/json'
-            # )
-            # resp.headers['Content-type'] = 'application/json'
+            params = request.get_json(force=True)
+            print(params)
+            data = {
+                'challenge': params.get('challenge'),
+            }
+            resp = Response(
+                response=json.dumps(data),
+                status=200,
+                mimetype='application/json'
+            )
+            resp.headers['Content-type'] = 'application/json'
 
-            # return resp
+            return resp
 
     app.secret_key = os.environ.setdefault("APP_SECRET_KEY", "notsosecret")
     app.config['SESSION_TYPE'] = 'filesystem'
