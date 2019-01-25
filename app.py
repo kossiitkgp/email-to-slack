@@ -42,7 +42,7 @@ def main():
             }
 
             sender_email = email["from"][0]["original"]
-            email_file_link = email["url_private"]
+            email_file_link = email["permalink"]
             email_subject = email["title"]
             email_content = "```" + email["plain_text"] + "```"
             timestamp = email["timestamp"]
