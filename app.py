@@ -48,19 +48,25 @@ def create_app():
                         "title": email_subject,
                         "title_link": email_file_link,
                         "text": email_content,
-                        "fields": [
-                            {
-                                "title": "This message also has attachements",
-                                "value": f"<{email_file_link}|View complete email>",
-                                "short": True
-                            }
-                        ],
+                        "fields": [{
+                            "title": "",
+                            "value": f"<{email_file_link}|View complete email>",
+                            "short": False
+                        }],
                         "footer": "email-to-slack",
                         "footer_icon": koss_logo_small,
                         "ts": timestamp
                     }
                 ]
             }
+
+            if len(email["attachements"]):
+                data["attachements"]["fields"].append({
+                    "title": "This email also has attachements",
+                    "value": "",
+                    "short": False
+                })
+
             r = requests.post(INCOMING_WEBHOOK_URL, json=data)
 
             """
