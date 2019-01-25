@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import json
+import requests
 
 from flask import Flask, render_template, redirect, request, Response
 
@@ -25,7 +26,6 @@ def create_app():
             headers = {
                 "Content-type": "application/json"
             }
-
 
             sender_email = email["from"][0]["original"]
             email_file_link = email["url_private"]
@@ -67,7 +67,7 @@ def create_app():
                     "short": False
                 })
 
-            r = requests.post(INCOMING_WEBHOOK_URL, json=data)
+            r = requests.post(INCOMING_WEBHOOK_URL, json=data, headers=headers)
 
             """
             Enable this to verify the URL while installing the app
