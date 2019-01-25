@@ -18,7 +18,7 @@ def create_app():
             # print(json.dumps(request.get_json(force=True)))
             # print("headers")
             # print(request.headers)
-            params = json.dumps(request.get_json(force=True))
+            params = request.get_json(force=True)
             email = params["event"]["files"][0]
 
             INCOMING_WEBHOOK_URL = os.environ["INCOMING_WEBHOOK_URL"]
@@ -67,7 +67,7 @@ def create_app():
                     "short": False
                 })
 
-            r = requests.post(INCOMING_WEBHOOK_URL, json=data, headers=headers)
+            r = requests.post(INCOMING_WEBHOOK_URL, headers=headers, json=data)
 
             """
             Enable this to verify the URL while installing the app
