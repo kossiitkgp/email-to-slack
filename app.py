@@ -4,6 +4,7 @@ import json
 
 from flask import Flask, render_template, redirect, request, Response
 
+
 def create_app():
     app = Flask(__name__)
 
