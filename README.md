@@ -10,3 +10,6 @@ be notified of every email instantly on slack; there is a hack for you.
 - Install it in your workspace
 - Install in one channel. You can install on multiple channels later
 -
+Find team id = https://stackoverflow.com/questions/40940327/what-is-the-simplest-way-to-find-a-slack-team-id-and-a-channel-id
+
+Could not find way to change file permissions. Hence create new stuff.

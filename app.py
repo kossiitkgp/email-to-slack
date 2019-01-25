@@ -7,18 +7,19 @@ from flask import Flask, render_template, redirect, request, Response
 
 app = Flask(__name__)
 
+
 def check_security(params):
-    APP_ID = params.get("api_app_id", "")
-    VERIFICATION_TOKEN = params.get("token", "")
+    app_id = params["api_app_id"] == os.environ["APP_ID"]
+    token = params["token"] == os.environ["VERIFICATION_TOKEN"]
+    team = params["team_id"] == os.environ["TEAM_ID"]
+    channel = params["event"]["channel"] == os.environ["USLACKBOT_CHANNEL"]
+    user = params["event"]["user"] == "USLACKBOT"
+    subtype = params["event"]["subtype"] = "file_share"
 
-    is_secure = True
-
-    if APP_ID != os.environ["APP_ID"]:
-        is_secure = False
-    elif VERIFICATION_TOKEN != os.environ["VERIFICATION_TOKEN"]:
-        is_secure = False
-
-    return is_secure
+    if app_id and token and team and channel and user and subtype:
+        return True
+    else:
+        return False
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -35,43 +36,52 @@ def main():
         if check_security(params):
             email = params["event"]["files"][0]
 
-            INCOMING_WEBHOOK_URL = os.environ["INCOMING_WEBHOOK_URL"]
+            if f"CHECKED_{email['id']}":
+                return Response(reason="Duplicate", status=409)
 
-            headers = {
-                "Content-type": "application/json"
-            }
+            email_provider = "https://www.fastmail.com"
+            url_to_creds =
 
             sender_email = email["from"][0]["original"]
-            email_file_link = email["permalink"]
             email_subject = email["title"]
             email_content = "```" + email["plain_text"] + "```"
             timestamp = email["timestamp"]
             koss_logo_small = "https://raw.githubusercontent.com/kossiitkgp/design/master/logo/exported/koss-filled-small.png"
 
             data = {
-                "text": f"\n*New mail in the inbox*! Click here : \n<{email_file_link}|Email>\n",
+                "text": f"\n*New mail in the inbox*! Respond - {email_provider}\n<{url_to_creds}|Username & Password>",
                 "attachments": [
                     {
-                        "fallback": email_file_link,
+                        "fallback": "Something went wrong while displaying.",
                         "color": "#36a64f",
                         "pretext": "Click on the file for better view. Although here are some details.",
                         "author_name": sender_email,
-                        "author_link": email_file_link,
+                        "author_link": email_provider,
                         "author_icon": koss_logo_small,
                         "title": email_subject,
-                        "title_link": email_file_link,
+                        "title_link": email_provider,
                         "text": email_content,
-                        "fields": [{
-                            "title": "",
-                            "value": f"<{email_file_link}|View complete email>",
-                            "short": False
-                        }],
+                        "fields": [],
                         "footer": "email-to-slack",
                         "footer_icon": koss_logo_small,
                         "ts": timestamp
                     }
                 ]
             }
+
+            all_to = ', '.join([i["original"] for i in email["to"]])
+            all_cc = ', '.join([i["original"] for i in email["cc"]])
+
+            data["attachments"][0]["fields"].append({
+                "title": "to",
+                "value": all_to
+            })
+
+            if all_cc:
+                data["attachments"][0]["fields"].append({
+                    "title": "cc",
+                    "value": all_cc
+                })
 
             if "attachments" in email:
                 data["attachments"][0]["fields"].append({
@@ -80,7 +90,17 @@ def main():
                     "short": False
                 })
 
+            INCOMING_WEBHOOK_URL = os.environ["INCOMING_WEBHOOK_URL"]
+
+            headers = {
+                "Content-type": "application/json"
+            }
+
             r = requests.post(INCOMING_WEBHOOK_URL, headers=headers, json=data)
+
+            # Slack API sends two payloads for single event. This is a bug
+            # involving Heroku and Slack API.
+            os.environ[f"CHECKED_{email['id']}"] = True
 
             return Response(
                 response=r.reason,
