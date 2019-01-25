@@ -29,14 +29,15 @@ def main():
     elif request.method == "POST":
         # print("parameters")
         # print(json.dumps(request.get_json(force=True)))
-        print("\n\n\n\nheaders\n\n\n\n")
-        print(request.headers)
+        # print("\n\n\n\nheaders\n\n\n\n")
+        # print(request.headers)
         params = request.get_json(force=True)
 
         if check_security(params):
             email = params["event"]["files"][0]
 
-            if f"CHECKED_{email['id']}" in os.environ:
+            if f"CHECKED_{email['id']}" in os.environ or "X-Slack-Retry-Num" in request.headers:
+                # This email has already been processed
                 return Response(response="Duplicate", status=409)
 
             email_provider = "https://www.fastmail.com"
@@ -83,7 +84,7 @@ def main():
                     "value": all_cc
                 })
 
-            if "attachments" in email:
+            if email["attachments"]:
                 data["attachments"][0]["fields"].append({
                     "title": "",
                     "value": "This email also has attachments",
