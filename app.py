@@ -61,7 +61,7 @@ def create_app():
             }
 
             if "attachments" in email:
-                data["attachments"]["fields"].append({
+                data["attachments"][0]["fields"].append({
                     "title": "This email also has attachments",
                     "value": "",
                     "short": False
