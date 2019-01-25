@@ -29,8 +29,8 @@ def main():
     elif request.method == "POST":
         # print("parameters")
         # print(json.dumps(request.get_json(force=True)))
-        # print("headers")
-        # print(request.headers)
+        print("\n\n\n\nheaders\n\n\n\n")
+        print(request.headers)
         params = request.get_json(force=True)
 
         if check_security(params):
@@ -54,7 +54,7 @@ def main():
                     {
                         "fallback": "Something went wrong while displaying.",
                         "color": "#36a64f",
-                        "pretext": "Click on the file for better view. Although here are some details.",
+                        "pretext": "",
                         "author_name": sender_email,
                         "author_link": email_provider,
                         "author_icon": koss_logo_small,
@@ -100,11 +100,11 @@ def main():
 
             # Slack API sends two payloads for single event. This is a bug
             # involving Heroku and Slack API.
-            os.environ[f"CHECKED_{email['id']}"] = True
+            os.environ[f"CHECKED_{email['id']}"] = ''
 
             return Response(
-                response=r.reason,
-                status=r.status_code
+                response="ok"
+                status=200
             )
         else:
             return Response(
