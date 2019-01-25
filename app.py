@@ -53,7 +53,7 @@ def main():
             koss_logo_small = "https://raw.githubusercontent.com/kossiitkgp/design/master/logo/exported/koss-filled-small.png"
 
             data = {
-                "text": f"\n*New mail in the inbox*! Respond - {email_provider}\n<{url_to_creds}|Username & Password>",
+                "text": "",
                 "attachments": [
                     {
                         "fallback": "Something went wrong while displaying.",
