@@ -44,7 +44,6 @@ def main():
                 return Response(response="Duplicate", status=409)
 
             email_provider = "https://www.fastmail.com"
-            url_to_creds = "https://github.com/kossiitkgp/secrets"
 
             sender_email = email["from"][0]["original"]
             email_subject = email["title"]
