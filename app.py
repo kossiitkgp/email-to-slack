@@ -60,7 +60,7 @@ def create_app():
                 ]
             }
 
-            if len(email["attachements"]):
+            if "attachements" in email:
                 data["attachements"]["fields"].append({
                     "title": "This email also has attachements",
                     "value": "",
@@ -68,6 +68,8 @@ def create_app():
                 })
 
             r = requests.post(INCOMING_WEBHOOK_URL, headers=headers, json=data)
+
+            return r.status_code, r.reason
 
             """
             Enable this to verify the URL while installing the app
