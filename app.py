@@ -103,7 +103,7 @@ def main():
             os.environ[f"CHECKED_{email['id']}"] = ''
 
             return Response(
-                response="ok"
+                response="ok",
                 status=200
             )
         else:
