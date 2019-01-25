@@ -36,8 +36,8 @@ def main():
         if check_security(params):
             email = params["event"]["files"][0]
 
-            if f"CHECKED_{email['id']}":
-                return Response(reason="Duplicate", status=409)
+            if f"CHECKED_{email['id']}" in os.environ:
+                return Response(response="Duplicate", status=409)
 
             email_provider = "https://www.fastmail.com"
             url_to_creds = "https://github.com/kossiitkgp/secrets"
