@@ -86,7 +86,7 @@ def main():
                         "fields": [],
                         # "footer": "email-to-slack",
                         # "footer_icon": koss_logo_small,
-                        # "ts": timestamp
+                        "ts": "⏰" + timestamp
                     }
                 ]
             }
