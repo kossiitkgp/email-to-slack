@@ -36,11 +36,11 @@ def main():
         mimetype='application/json'
     )
     resp.headers['Content-type'] = 'application/json'
+    return resp
     if request.method == "GET":
         return redirect("https://github.com/kossiitkgp/email-to-slack")
     elif request.method == "POST":
 
-        return resp
         print("parameters")
         print(json.dumps(request.get_json(force=True)))
         print("\n\n\n\nheaders\n\n\n\n")
