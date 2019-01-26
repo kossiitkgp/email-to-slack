@@ -27,18 +27,18 @@ def validate(params):
 
 @app.route("/", methods=['GET', 'POST'])
 def main():
+    data = {
+        'challenge': params.get('challenge'),
+    }
+    resp = Response(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    resp.headers['Content-type'] = 'application/json'
     if request.method == "GET":
         return redirect("https://github.com/kossiitkgp/email-to-slack")
     elif request.method == "POST":
-        data = {
-            'challenge': params.get('challenge'),
-        }
-        resp = Response(
-            response=json.dumps(data),
-            status=200,
-            mimetype='application/json'
-        )
-        resp.headers['Content-type'] = 'application/json'
 
         return resp
         print("parameters")
