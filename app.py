@@ -77,7 +77,7 @@ def main():
                 "attachments": [
                     {
                         "fallback": "Something went wrong while displaying.",
-                        "color": "#36a64f",
+                        "color": "#2196F3",
                         "pretext": "",
                         "author_name": sender_email,
                         "author_link": email_provider,
