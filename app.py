@@ -86,7 +86,7 @@ def main():
                         "fields": [],
                         "footer": "",
                         "footer_icon": "",
-                        "ts": "⏰" + timestamp
+                        "ts": timestamp
                     }
                 ]
             }
