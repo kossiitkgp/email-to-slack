@@ -9,9 +9,9 @@ This bot watches for messages in the slackbot chat and whenever a message arrive
 
 # How to make it work ?
 1. Set up a forwarding email. If you send any email to this address, it will appear as a file in your Direct Messaging channel with slackbot.
-2. Add this address as a forwarding address of your email account. (For gmail find forwarding options from gmail settings)
-3. Use Slack API to get notified about this.
-4. Use Slack API to post the email on a channel you want to.
+1. Add this address as a forwarding address of your email account. (For gmail find forwarding options from gmail settings)
+1. Use Slack API to get notified about this.
+1. Use Slack API to post the email on a channel you want to.
 
 # Detailed steps
 
