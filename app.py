@@ -27,14 +27,33 @@ def validate(params):
 
 @app.route("/", methods=['GET', 'POST'])
 def main():
+    
     if request.method == "GET":
         return redirect("https://github.com/kossiitkgp/email-to-slack")
     elif request.method == "POST":
-        # print("parameters")
-        # print(json.dumps(request.get_json(force=True)))
-        # print("\n\n\n\nheaders\n\n\n\n")
-        # print(request.headers)
+
+        print("parameters")
+        print(json.dumps(request.get_json(force=True)))
+        print("\n\n\n\nheaders\n\n\n\n")
+        print(request.headers)
         params = request.get_json(force=True)
+
+        """
+        Enable this to verify the URL while installing the app
+        """
+        if 'challenge' in params:
+            data = {
+                'challenge': params.get('challenge'),
+            }
+            resp = Response(
+                response=json.dumps(data),
+                status=200,
+                mimetype='application/json'
+            )
+            resp.headers['Content-type'] = 'application/json'
+
+            return resp
+
 
         if validate(params):
             email = params["event"]["files"][0]
@@ -99,6 +118,7 @@ def main():
                 "Content-type": "application/json"
             }
 
+            print("Sending message to ", INCOMING_WEBHOOK_URL, headers, data)
             r = requests.post(INCOMING_WEBHOOK_URL, headers=headers, json=data)
 
             # Slack API sends two payloads for single event. This is a bug
@@ -115,21 +135,6 @@ def main():
                 status=401
             )
 
-        """
-        Enable this to verify the URL while installing the app
-        """
-
-        # data = {
-        #     'challenge': params.get('challenge'),
-        # }
-        # resp = Response(
-        #     response=json.dumps(data),
-        #     status=200,
-        #     mimetype='application/json'
-        # )
-        # resp.headers['Content-type'] = 'application/json'
-
-        # return resp
 
 app.secret_key = os.environ.setdefault("APP_SECRET_KEY", "notsosecret")
 app.config['SESSION_TYPE'] = 'filesystem'
