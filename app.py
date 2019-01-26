@@ -95,8 +95,8 @@ def main():
             all_cc = ', '.join([i["original"] for i in email["cc"]])
 
             data["attachments"][0]["fields"].append({
-                "title": "Sent To",
-                "value": all_to
+                "title": "",
+                "value": "Sent To" + all_to
             })
 
             if all_cc:
