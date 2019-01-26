@@ -70,6 +70,9 @@ def main():
             timestamp = email["timestamp"]
             koss_logo_small = "https://raw.githubusercontent.com/kossiitkgp/design/master/logo/exported/koss-filled-small.png"
 
+            all_to = ', '.join([i["original"] for i in email["to"]])
+            all_cc = ', '.join([i["original"] for i in email["cc"]])
+            
             data = {
                 "text": "",
                 "attachments": [
@@ -91,8 +94,6 @@ def main():
                 ]
             }
 
-            all_to = ', '.join([i["original"] for i in email["to"]])
-            all_cc = ', '.join([i["original"] for i in email["cc"]])
 
             if all_cc:
                 data["attachments"][0]["fields"].append({
