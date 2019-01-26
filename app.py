@@ -118,6 +118,7 @@ def main():
                 "Content-type": "application/json"
             }
 
+            print("Sending message to ", INCOMING_WEBHOOK_URL, headers, data)
             r = requests.post(INCOMING_WEBHOOK_URL, headers=headers, json=data)
 
             # Slack API sends two payloads for single event. This is a bug
