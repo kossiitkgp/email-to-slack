@@ -79,14 +79,14 @@ def main():
                         "pretext": "",
                         "author_name": sender_email,
                         "author_link": email_provider,
-                        "author_icon": koss_logo_small,
+                        # "author_icon": koss_logo_small,
                         "title": email_subject,
                         "title_link": email_provider,
                         "text": email_content,
                         "fields": [],
-                        "footer": "email-to-slack",
-                        "footer_icon": koss_logo_small,
-                        "ts": timestamp
+                        # "footer": "email-to-slack",
+                        # "footer_icon": koss_logo_small,
+                        # "ts": timestamp
                     }
                 ]
             }
