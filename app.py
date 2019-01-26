@@ -27,6 +27,7 @@ def validate(params):
 
 @app.route("/", methods=['GET', 'POST'])
 def main():
+    params = request.get_json(force=True)
     data = {
         'challenge': params.get('challenge'),
     }
