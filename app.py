@@ -68,36 +68,31 @@ def main():
             email_subject = email["title"]
             email_content = "```" + email["plain_text"] + "```"
             timestamp = email["timestamp"]
-            koss_logo_small = "https://raw.githubusercontent.com/kossiitkgp/design/master/logo/exported/koss-filled-small.png"
 
+            all_to = ', '.join([i["original"] for i in email["to"]])
+            all_cc = ', '.join([i["original"] for i in email["cc"]])
+            
             data = {
                 "text": "",
                 "attachments": [
                     {
                         "fallback": "Something went wrong while displaying.",
-                        "color": "#36a64f",
+                        "color": "#2196F3",
                         "pretext": "",
                         "author_name": sender_email,
                         "author_link": email_provider,
-                        "author_icon": koss_logo_small,
+                        "author_icon": "",
                         "title": email_subject,
                         "title_link": email_provider,
                         "text": email_content,
                         "fields": [],
-                        "footer": "email-to-slack",
-                        "footer_icon": koss_logo_small,
+                        "footer": "Sent to : " + all_to,
+                        "footer_icon": "",
                         "ts": timestamp
                     }
                 ]
             }
 
-            all_to = ', '.join([i["original"] for i in email["to"]])
-            all_cc = ', '.join([i["original"] for i in email["cc"]])
-
-            data["attachments"][0]["fields"].append({
-                "title": "Sent To",
-                "value": all_to
-            })
 
             if all_cc:
                 data["attachments"][0]["fields"].append({
