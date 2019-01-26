@@ -84,7 +84,7 @@ def main():
                         "title_link": email_provider,
                         "text": email_content,
                         "fields": [],
-                        "footer": "",
+                        "footer": "Sent to : " + all_to,
                         "footer_icon": "",
                         "ts": timestamp
                     }
@@ -93,11 +93,6 @@ def main():
 
             all_to = ', '.join([i["original"] for i in email["to"]])
             all_cc = ', '.join([i["original"] for i in email["cc"]])
-
-            data["attachments"][0]["fields"].append({
-                "title": "",
-                "value": "Sent To" + all_to
-            })
 
             if all_cc:
                 data["attachments"][0]["fields"].append({
