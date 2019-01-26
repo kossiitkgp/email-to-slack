@@ -30,10 +30,10 @@ def main():
     if request.method == "GET":
         return redirect("https://github.com/kossiitkgp/email-to-slack")
     elif request.method == "POST":
-        # print("parameters")
-        # print(json.dumps(request.get_json(force=True)))
-        # print("\n\n\n\nheaders\n\n\n\n")
-        # print(request.headers)
+        print("parameters")
+        print(json.dumps(request.get_json(force=True)))
+        print("\n\n\n\nheaders\n\n\n\n")
+        print(request.headers)
         params = request.get_json(force=True)
 
         if validate(params):
@@ -119,17 +119,17 @@ def main():
         Enable this to verify the URL while installing the app
         """
 
-        # data = {
-        #     'challenge': params.get('challenge'),
-        # }
-        # resp = Response(
-        #     response=json.dumps(data),
-        #     status=200,
-        #     mimetype='application/json'
-        # )
-        # resp.headers['Content-type'] = 'application/json'
+        data = {
+            'challenge': params.get('challenge'),
+        }
+        resp = Response(
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
+        )
+        resp.headers['Content-type'] = 'application/json'
 
-        # return resp
+        return resp
 
 app.secret_key = os.environ.setdefault("APP_SECRET_KEY", "notsosecret")
 app.config['SESSION_TYPE'] = 'filesystem'
