@@ -38,6 +38,23 @@ def main():
         print(request.headers)
         params = request.get_json(force=True)
 
+        """
+        Enable this to verify the URL while installing the app
+        """
+        if 'challenge' in params:
+            data = {
+                'challenge': params.get('challenge'),
+            }
+            resp = Response(
+                response=json.dumps(data),
+                status=200,
+                mimetype='application/json'
+            )
+            resp.headers['Content-type'] = 'application/json'
+
+            return resp
+
+
         if validate(params):
             email = params["event"]["files"][0]
 
@@ -117,21 +134,6 @@ def main():
                 status=401
             )
 
-        """
-        Enable this to verify the URL while installing the app
-        """
-
-        data = {
-            'challenge': params.get('challenge'),
-        }
-        resp = Response(
-            response=json.dumps(data),
-            status=200,
-            mimetype='application/json'
-        )
-        resp.headers['Content-type'] = 'application/json'
-
-        return resp
 
 app.secret_key = os.environ.setdefault("APP_SECRET_KEY", "notsosecret")
 app.config['SESSION_TYPE'] = 'filesystem'
