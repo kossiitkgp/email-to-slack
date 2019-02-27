@@ -22,22 +22,29 @@ def validate(params):
     if app_id and token and team and channel and user and subtype:
         return True
     else:
+        if not app_id:
+            print("APP_ID is not right!")
+        if not token:
+            print("TOKEN is not right!")
+        if not team:
+            print("TEAM_ID is not right!")
+        if not channel:
+            print("USLACKBOT channel is not right!")
+        print("\n\n\n")
         return False
 
 
 @app.route("/", methods=['GET', 'POST'])
 def main():
-    
     if request.method == "GET":
         return redirect("https://github.com/kossiitkgp/email-to-slack")
     elif request.method == "POST":
 
-        print("parameters")
-        print(json.dumps(request.get_json(force=True)))
-        print("\n\n\n\nheaders\n\n\n\n")
-        print(request.headers)
+        print("New Email recieved\n Parameters")
         params = request.get_json(force=True)
-
+        print(json.dumps(params))
+        print("\n\n\n\nHEADERS\n\n\n\n")
+        print(request.headers)
         """
         Enable this to verify the URL while installing the app
         """
@@ -53,8 +60,6 @@ def main():
             resp.headers['Content-type'] = 'application/json'
 
             return resp
-
-
         if validate(params):
             email = params["event"]["files"][0]
 
@@ -62,7 +67,7 @@ def main():
                 # This email has already been processed
                 return Response(response="Duplicate", status=409)
 
-            email_provider = "https://www.fastmail.com"
+            email_provider = "http://gmail.com/"
 
             sender_email = email["from"][0]["original"]
             email_subject = email["title"]
@@ -76,7 +81,7 @@ def main():
                 "text": "",
                 "attachments": [
                     {
-                        "fallback": "Something went wrong while displaying.",
+                        "fallback": "An email was sent by " + sender_email,
                         "color": "#2196F3",
                         "pretext": "",
                         "author_name": sender_email,
@@ -112,10 +117,10 @@ def main():
             headers = {
                 "Content-type": "application/json"
             }
-
-            print("Sending message to ", INCOMING_WEBHOOK_URL, headers, data)
+            print("Sending the following data to ", INCOMING_WEBHOOK_URL)
+            print("\n\n\n", data ,"\n\n\n")
             r = requests.post(INCOMING_WEBHOOK_URL, headers=headers, json=data)
-
+            print("\n\n\n Exit with status code {}\n\n".format(r.status_code))
             # Slack API sends two payloads for single event. This is a bug
             # involving Heroku and Slack API.
             os.environ[f"CHECKED_{email['id']}"] = ''
