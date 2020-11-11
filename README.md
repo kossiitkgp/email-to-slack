@@ -30,7 +30,7 @@ this bot watches for messages in the slackbot chat and whenever a message arrive
 - Go to api.slack.com/apps and create a new Slack app.
 - After creating the app, navigate to the app dashboard and find "Event Subscriptions" in the sidebar.
 - Subscribe to the event `message.im` which is the only event we need to be notified about.
-- Go to "OAuth and Permissions" and add `files:read`, `im:history` and `incoming-webhood` scopes.
+- Go to "OAuth and Permissions" and add `files:read`, `im:history` and `incoming-webhook` scopes.
 - Install it in your workspace
 - Activate incoming webhook for a channel. This will let you easily post to a channel.
 - Add the URL of your server (A heroku app which can be deployed from this repository).
