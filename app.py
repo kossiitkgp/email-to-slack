@@ -17,20 +17,25 @@ def validate(params):
     team = params["team_id"] == os.environ["TEAM_ID"]
     channel = params["event"]["channel"] == os.environ["USLACKBOT_CHANNEL"]
     user = params["event"].get("user", "") == "USLACKBOT"
-    subtype = params["event"]["subtype"] = "file_share"
+    subtype = params["event"]["subtype"] == "file_share"
 
     if app_id and token and team and channel and user and subtype:
         return True
     else:
         if not app_id:
-            print("APP_ID is not right!")
+            print("env: APP_ID is not right!")
         if not token:
-            print("TOKEN is not right!")
+            print("env: TOKEN is not right!")
         if not team:
-            print("TEAM_ID is not right!")
+            print("env: TEAM_ID is not right!")
         if not channel:
-            print("USLACKBOT channel is not right!")
-        print("\n\n\n")
+            print("env: USLACKBOT channel is not right!")
+        if not user:
+            print("User is not right! user: ", params["event"].get("user", ""))
+        if not subtype:
+            print("Email subtype not right subtype: ",
+                  params["event"]["subtype"])
+
         return False
 
 
@@ -43,7 +48,7 @@ def main():
         print("New Email recieved\n Parameters")
         params = request.get_json(force=True)
         print(json.dumps(params))
-        print("\n\n\n\nHEADERS\n\n\n\n")
+        print("\n\n===HEADERS====\n")
         print(request.headers)
         """
         Enable this to verify the URL while installing the app
@@ -76,7 +81,7 @@ def main():
 
             all_to = ', '.join([i["original"] for i in email["to"]])
             all_cc = ', '.join([i["original"] for i in email["cc"]])
-            
+
             data = {
                 "text": "",
                 "attachments": [
@@ -98,7 +103,6 @@ def main():
                 ]
             }
 
-
             if all_cc:
                 data["attachments"][0]["fields"].append({
                     "title": "cc",
@@ -118,7 +122,7 @@ def main():
                 "Content-type": "application/json"
             }
             print("Sending the following data to ", INCOMING_WEBHOOK_URL)
-            print("\n\n\n", data ,"\n\n\n")
+            print("\n\n\n", data, "\n\n\n")
             r = requests.post(INCOMING_WEBHOOK_URL, headers=headers, json=data)
             print("\n\n\n Exit with status code {}\n\n".format(r.status_code))
             # Slack API sends two payloads for single event. This is a bug
