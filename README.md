@@ -80,7 +80,7 @@ Do note the link to which server is deployed, we will set it up in slack setting
 2. Put the link to the deployed server in "Request URL".
 3. Subscribe to `message.im` in **Subscribe to events on behalf of users**
 
-Viola the setup is complete!
+Voilà the setup is complete!
 
 ## Notes:
 
