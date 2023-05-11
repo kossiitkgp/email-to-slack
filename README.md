@@ -33,17 +33,24 @@ this bot watches for messages in the Slackbot chat and whenever a message arrive
 
 ### Deploying the server
 
-> Here we will deploy on heroku for simplicity. This can be deployed to any other hosting provider or the app can be self hosted if you choose to do so. Do note that though deployment on heroku is optional, deployment itself is not!
+> Here we will deploy on [fly](https://fly.io) for simplicity. This can be deployed to any other hosting provider or the app can be self hosted if you choose to do so. Do note that though deployment on [fly](https://fly.io) is optional, deployment itself is not!
 > If you have deployed the app elsewhere, please set the environment variables accordingly.
 
-For heroku ensure: You have the `heroku-cli` installed. If you haven't logged in: `heroku login`
+> For fly ensure: You have the `flyctl` installed, If not follow the steps [flyctl installation](https://fly.io/docs/hands-on/install-flyctl/). 
+If you haven't logged in: `fly auth login`
 
 Then in the root of the repo:
 
 ```sh
-$ heroku create # creates a new heroku app
-$ git push heroku master:main # deploys the master branch
+$ flyctl launch # generates the fly.toml file for this project
 ```
+> Note: after this step, you need to edit Procfile according to your needs, here in this directory Procfile is already configured for you, so select N when prompted to edit. 
+
+```sh
+$ flyctl secrets set APP_ID=... # set the environment variables, do this for all env variables
+$ fly deploy # deploys the master branch
+```
+> If you are stuck anywhere, please refer to [flyctl docs](https://fly.io/docs/languages-and-frameworks/python/)
 
 > _Aside_:
 > One quick way to test that the deployment was semi-successful is to visit the deployed URL and it should redirect to the github's repo. The app processes the POST requests and all GET requests are forwarded to the repo's page.
@@ -66,10 +73,10 @@ https://app.slack.com/client/<TEAM_ID>/<USLACKBOT_CHANNEL>/
 
 For more details on finding team and channel ID [see this question on stackoverflow](https://stackoverflow.com/questions/40940327/what-is-the-simplest-way-to-find-a-slack-team-id-and-a-channel-id).
 
-You can set these variables either on the Heroku Dashboard or via cli:
+You can set these variables via cli in the directory containing [fly.toml](./fly.toml):
 
 ```
-$ heroku config:set APP_ID=xxxxxxxx
+$ flyctl secrets set APP_ID=... 
 ```
 
 Do note the link to which server is deployed, we will set it up in slack settings in a moment.
