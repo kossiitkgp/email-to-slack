@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for email-to-slack-koss on 2023-05-11T01:28:02+05:30
+# fly.toml app configuration file generated for email-to-slack-koss on 2023-05-11T10:51:33+05:30
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = "email-to-slack-koss"
-primary_region = "hkg"
+primary_region = "sin"
 
 [build]
   builder = "paketobuildpacks/builder:base"
@@ -12,8 +12,27 @@ primary_region = "hkg"
 [env]
   PORT = "8080"
 
-[http_service]
+# [http_service]
+  # internal_port = 8080
+  # force_https = true
+  # auto_stop_machines = true
+  # auto_start_machines = true
+[[services]]
   internal_port = 8080
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
+  protocol = "tcp"
+
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = "80"
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = "443"
+
+  [[services.tcp_checks]]
+    interval = 10000
+    timeout = 2000
